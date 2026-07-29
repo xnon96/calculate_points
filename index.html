@@ -1,282 +1,439 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة النقاط</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">🏆</div>
-    <h2>لوحة النقاط</h2>
-    <p>أدخل كلمة المرور للوصول</p>
-    <input type="password" id="pw-input" class="login-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">دخول</button>
-    <div class="login-error" id="login-err">❌ كلمة المرور غير صحيحة</div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-  <header>
-    <div class="header-title">🏆 لوحة النقاط</div>
-    <div class="header-actions">
-      <button class="btn btn-primary" onclick="openAddModal()">➕ إضافة عضو</button>
-      <!-- <button class="btn btn-outline" onclick="exportPDF()">📄 تصدير PDF</button> -->
-      <!-- <button class="btn btn-outline" onclick="importJSON()">📂 استيراد</button> -->
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
-      <button class="btn btn-outline" onclick="logout()" style="padding:9px 12px">🚪</button>
-    </div>
-  </header>
-
-  <main>
-    <div class="stats-grid">
-      <div class="stat-card blue">
-        <div class="stat-icon">👥</div>
-        <div class="stat-value" id="stat-total">0</div>
-        <div class="stat-label">إجمالي الأعضاء</div>
-      </div>
-      <div class="stat-card gold">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-value" id="stat-points">0</div>
-        <div class="stat-label">مجموع النقاط</div>
-      </div>
-      <div class="stat-card purple">
-        <div class="stat-icon">🥇</div>
-        <div class="stat-value" id="stat-top">—</div>
-        <div class="stat-label">الأعلى نقاطاً</div>
-      </div>
-      <div class="stat-card green">
-        <div class="stat-icon">📊</div>
-        <div class="stat-value" id="stat-avg">0</div>
-        <div class="stat-label">متوسط النقاط</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة النقاط</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- LOGIN -->
+    <div id="login-screen">
+      <div class="login-box">
+        <div class="login-logo">🏆</div>
+        <h2>لوحة النقاط</h2>
+        <p>أدخل كلمة المرور للوصول</p>
+        <input
+          type="password"
+          id="pw-input"
+          class="login-input"
+          placeholder="••••••••"
+          onkeydown="if (event.key === 'Enter') doLogin();"
+        />
+        <button class="login-btn" onclick="doLogin()">دخول</button>
+        <div class="login-error" id="login-err">❌ كلمة المرور غير صحيحة</div>
       </div>
     </div>
 
-    <div class="controls">
-      <input type="text" class="search-input" placeholder="🔍 بحث بالاسم..." oninput="renderTable()" id="search">
-      <select class="search-input" style="max-width:160px" onchange="renderTable()" id="filter-rank">
-        <option value="">كل الرتب</option>
-        <option value="3">رتبة 3</option>
-        <option value="4">رتبة 4</option>
-        <option value="5">رتبة 5</option>
-        <option value="6">رتبة 6</option>
-      </select>
-      <select class="search-input" style="max-width:160px" onchange="renderTable()" id="sort-by">
-        <option value="name">ترتيب: الاسم</option>
-        <option value="points-desc">الأعلى نقاطاً</option>
-        <option value="points-asc">الأقل نقاطاً</option>
-        <option value="rank">الرتبة</option>
-      </select>
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+      <header>
+        <div class="header-title">🏆 لوحة النقاط</div>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="openAddModal()">
+            ➕ إضافة عضو
+          </button>
+          <button class="btn btn-outline" onclick="openReportModal()">
+            🖨️ تقرير Discord
+          </button>
+          <!-- <button class="btn btn-outline" onclick="exportPDF()">📄 تصدير PDF</button> -->
+          <!-- <button class="btn btn-outline" onclick="importJSON()">📂 استيراد</button> -->
+          <input
+            type="file"
+            id="import-file"
+            accept=".json"
+            style="display: none"
+            onchange="handleImport(event)"
+          />
+          <button
+            class="btn btn-outline"
+            onclick="logout()"
+            style="padding: 9px 12px"
+          >
+            🚪
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">إجمالي الأعضاء</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="stat-points">0</div>
+            <div class="stat-label">مجموع النقاط</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon">🥇</div>
+            <div class="stat-value" id="stat-top">—</div>
+            <div class="stat-label">الأعلى نقاطاً</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="stat-avg">0</div>
+            <div class="stat-label">متوسط النقاط</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="🔍 بحث بالاسم..."
+            oninput="renderTable()"
+            id="search"
+          />
+          <select
+            class="search-input"
+            style="max-width: 160px"
+            onchange="renderTable()"
+            id="filter-rank"
+          >
+            <option value="">كل الرتب</option>
+            <option value="3">رتبة 3</option>
+            <option value="4">رتبة 4</option>
+            <option value="5">رتبة 5</option>
+            <option value="6">رتبة 6</option>
+          </select>
+          <select
+            class="search-input"
+            style="max-width: 160px"
+            onchange="renderTable()"
+            id="sort-by"
+          >
+            <option value="name">ترتيب: الاسم</option>
+            <option value="points-desc">الأعلى نقاطاً</option>
+            <option value="points-asc">الأقل نقاطاً</option>
+            <option value="rank">الرتبة</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الاسم</th>
+                <th>الرتبة</th>
+                <th>النقاط</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+          <div id="empty-state" class="empty-state" style="display: none">
+            <div class="empty-icon">📭</div>
+            <div>لا يوجد أعضاء بعد</div>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>الاسم</th>
-            <th>الرتبة</th>
-            <th>النقاط</th>
-            <th>الإجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-      <div id="empty-state" class="empty-state" style="display:none">
-        <div class="empty-icon">📭</div>
-        <div>لا يوجد أعضاء بعد</div>
+    <!-- ADD/EDIT MEMBER MODAL -->
+    <div class="modal-bg" id="member-modal">
+      <div class="modal">
+        <h3 id="modal-title">➕ إضافة عضو جديد</h3>
+        <div class="form-group">
+          <label class="form-label">الاسم</label>
+          <input
+            type="text"
+            class="form-input"
+            id="m-name"
+            placeholder="اسم العضو"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">الرتبة</label>
+          <select class="form-input" id="m-rank">
+            <option value="3">رتبة 3</option>
+            <option value="4">رتبة 4</option>
+            <option value="5">رتبة 5</option>
+            <option value="6">رتبة 6</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">النقاط الابتدائية</label>
+          <input
+            type="number"
+            class="form-input"
+            id="m-points"
+            placeholder="0"
+            min="0"
+            value="0"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">الجنس</label>
+          <select class="form-input" id="m-gender">
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('member-modal')">
+            إلغاء
+          </button>
+          <button class="btn btn-primary" onclick="saveMember()">حفظ</button>
+        </div>
       </div>
     </div>
-  </main>
-</div>
 
-<!-- ADD/EDIT MEMBER MODAL -->
-<div class="modal-bg" id="member-modal">
-  <div class="modal">
-    <h3 id="modal-title">➕ إضافة عضو جديد</h3>
-    <div class="form-group">
-      <label class="form-label">الاسم</label>
-      <input type="text" class="form-input" id="m-name" placeholder="اسم العضو">
+    <!-- ADD POINTS MODAL -->
+    <div class="modal-bg" id="points-modal">
+      <div class="modal">
+        <h3 id="pts-modal-title">⭐ إضافة نقاط</h3>
+        <div class="points-actions">
+          <h4 id="pts-actions-label">اختر النشاط</h4>
+          <div class="action-list" id="action-list"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">أو أدخل نقاط مخصصة</label>
+          <input
+            type="number"
+            class="form-input"
+            id="custom-pts"
+            placeholder="0"
+            min="0"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ملاحظة</label>
+          <input
+            type="text"
+            class="form-input"
+            id="pts-note"
+            placeholder="سبب الإضافة..."
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">سجل النقاط</label>
+          <div class="history-log" id="pts-history"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('points-modal')">
+            إغلاق
+          </button>
+          <button class="btn btn-primary" onclick="addCustomPoints()">
+            إضافة
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">الرتبة</label>
-      <select class="form-input" id="m-rank">
-        <option value="3">رتبة 3</option>
-        <option value="4">رتبة 4</option>
-        <option value="5">رتبة 5</option>
-        <option value="6">رتبة 6</option>
-      </select>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div class="modal-bg" id="delete-modal">
+      <div class="modal confirm-modal">
+        <div class="confirm-icon">🗑️</div>
+        <h3>حذف العضو</h3>
+        <p>هل أنت متأكد من حذف</p>
+        <span class="confirm-name" id="delete-name">—</span>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: -16px">
+          لا يمكن التراجع عن هذا الإجراء
+        </p>
+        <div class="confirm-btns">
+          <button class="btn btn-outline" onclick="closeModal('delete-modal')">
+            إلغاء
+          </button>
+          <button class="btn btn-confirm-del" onclick="confirmDelete()">
+            🗑️ حذف
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">النقاط الابتدائية</label>
-      <input type="number" class="form-input" id="m-points" placeholder="0" min="0" value="0">
+
+    <!-- DISCORD REPORT MODAL -->
+    <div class="modal-bg" id="report-modal">
+      <div class="modal" style="max-width: 640px">
+        <h3>🖨️ تقرير Discord</h3>
+        <div class="form-group">
+          <label class="form-label">ترتيب حسب</label>
+          <select
+            class="form-input"
+            id="report-sort"
+            onchange="generateReport()"
+          >
+            <option value="points-desc">الأعلى نقاطاً أولاً</option>
+            <option value="points-asc">الأقل نقاطاً أولاً</option>
+            <option value="name">الاسم</option>
+            <option value="rank">الرتبة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">النص الجاهز للنسخ إلى Discord</label>
+          <textarea
+            id="report-text"
+            readonly
+            style="
+              width: 100%;
+              height: 360px;
+              direction: ltr;
+              text-align: left;
+              font-family: monospace;
+              font-size: 0.8rem;
+              background: #0a0f1e;
+              color: #e2e8f0;
+              border: 1px solid #1f2937;
+              border-radius: 8px;
+              padding: 10px;
+              resize: vertical;
+            "
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('report-modal')">
+            إغلاق
+          </button>
+          <button class="btn btn-primary" onclick="copyReport()">
+            📋 نسخ النص
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('member-modal')">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveMember()">حفظ</button>
-    </div>
-  </div>
-</div>
 
-<!-- ADD POINTS MODAL -->
-<div class="modal-bg" id="points-modal">
-  <div class="modal">
-    <h3 id="pts-modal-title">⭐ إضافة نقاط</h3>
-    <div class="points-actions">
-      <h4 id="pts-actions-label">اختر النشاط</h4>
-      <div class="action-list" id="action-list"></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">أو أدخل نقاط مخصصة</label>
-      <input type="number" class="form-input" id="custom-pts" placeholder="0" min="0">
-    </div>
-    <div class="form-group">
-      <label class="form-label">ملاحظة</label>
-      <input type="text" class="form-input" id="pts-note" placeholder="سبب الإضافة...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">سجل النقاط</label>
-      <div class="history-log" id="pts-history"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('points-modal')">إغلاق</button>
-      <button class="btn btn-primary" onclick="addCustomPoints()">إضافة</button>
-    </div>
-  </div>
-</div>
+    <!-- TOAST -->
+    <div id="toast"></div>
 
-<!-- DELETE CONFIRM MODAL -->
-<div class="modal-bg" id="delete-modal">
-  <div class="modal confirm-modal">
-    <div class="confirm-icon">🗑️</div>
-    <h3>حذف العضو</h3>
-    <p>هل أنت متأكد من حذف</p>
-    <span class="confirm-name" id="delete-name">—</span>
-    <p style="font-size:0.8rem;color:var(--muted);margin-top:-16px">لا يمكن التراجع عن هذا الإجراء</p>
-    <div class="confirm-btns">
-      <button class="btn btn-outline" onclick="closeModal('delete-modal')">إلغاء</button>
-      <button class="btn btn-confirm-del" onclick="confirmDelete()">🗑️ حذف</button>
-    </div>
-  </div>
-</div>
+    <script>
+      const PASSWORD = "Haya";
+      const STORAGE_KEY = "dashboard_data";
 
-<!-- TOAST -->
-<div id="toast"></div>
+      // Discord emoji codes used in the report export
+      const DISCORD_STAR = "<a:star:1336484075275288697>";
+      const DISCORD_STAR_PINK = "<a:util_star_pink:1353652705842823168>";
+      const DISCORD_PINK = "<a:pink:1348900341978107924>";
+      const DISCORD_LOADER_MALE = "<a:ss_5:1439984627946356756>";
+      const DISCORD_LINE = "<a:line_rgb:1425509094013538347>";
 
-<script>
-const PASSWORD = 'Hh123456789@';
-const STORAGE_KEY = 'dashboard_data';
+      const ACTIONS = {
+        "3-4": [
+          { label: "عمل مقابلة", pts: 3 },
+          { label: "حضور مقابل", pts: 2 },
+          { label: "عمل دورية إنعاش", pts: 4 },
+          { label: "حضور فعالية", pts: 3 },
+          { label: "حضور حصة إرشاد", pts: 2 },
+          { label: "كتابه تقرير الدوريه", pts: 2 },
+          { label: "الوصول في موعد المقابلات", pts: 3 },
+          { label: "عمل محاضره ارشاديه", pts: 7 },
+          { label: "نقاط خاصه", pts: 3 },
+        ],
 
- 
-const ACTIONS = {
-  
-  '3-4': [
-    { label: 'عمل مقابلة', pts: 3 },
-    { label: 'حضور مقابل', pts: 2 },
-    { label: 'عمل دورية إنعاش', pts: 4 },
-    { label: 'حضور فعالية', pts: 3 },
-    { label: 'حضور حصة إرشاد', pts: 2 },
-    { label: 'كتابه تقرير الدوريه' , pts: 2 },
-    { label: 'الوصول في موعد المقابلات' , pts: 3 },
-    { label: 'عمل محاضره ارشاديه', pts: 7 },
-    { label: 'نقاط خاصه', pts: 3 },
-  ],
- 
-  '5-6': [
-    { label: 'حضور', pts: 2 },
-    { label: 'مقابلات لرتبة 3 أو 4', pts: 3 },
-    { label: 'تنظيم وقت المقابلات', pts: 2 },
-    { label: 'دورية إنعاش', pts: 4 },
-    { label: 'حضور فعالية + انتظام للفرق الأخرى', pts: 3 },
-    { label: 'مشاركة بالدورية للفرق الأخرى', pts: 2 },
-    { label: 'تنظيم بالمشفى', pts: 2 },
-    { label: 'حضور فعالية أدمن', pts: 4 },
-    { label: 'حضور حصص إرشاد', pts: 2 },
-    { label: 'مشارك في دوريه انعاش', pts: 4},
-    { label: 'كتابه تقرير الدوريه' , pts: 2 },
-    { label: 'الوصول في موعد المقابلات' , pts: 3 },
-    { label: 'عمل محاضره ارشاديه', pts: 7 },
-    { label: 'نقاط خاصه', pts: 3 },
-  ]
-};
+        "5-6": [
+          { label: "حضور", pts: 2 },
+          { label: "مقابلات لرتبة 3 أو 4", pts: 3 },
+          { label: "تنظيم وقت المقابلات", pts: 2 },
+          { label: "دورية إنعاش", pts: 4 },
+          { label: "حضور فعالية + انتظام للفرق الأخرى", pts: 3 },
+          { label: "مشاركة بالدورية للفرق الأخرى", pts: 2 },
+          { label: "تنظيم بالمشفى", pts: 2 },
+          { label: "حضور فعالية أدمن", pts: 4 },
+          { label: "حضور حصص إرشاد", pts: 2 },
+          { label: "مشارك في دوريه انعاش", pts: 4 },
+          { label: "كتابه تقرير الدوريه", pts: 2 },
+          { label: "الوصول في موعد المقابلات", pts: 3 },
+          { label: "عمل محاضره ارشاديه", pts: 7 },
+          { label: "نقاط خاصه", pts: 3 },
+        ],
+      };
 
-let members = [];
-let editingId = null;
-let pointsTargetId = null;
-let deleteTargetId = null;
+      let members = [];
+      let editingId = null;
+      let pointsTargetId = null;
+      let deleteTargetId = null;
 
-function doLogin() {
-  const pw = document.getElementById('pw-input').value;
-  if (pw === PASSWORD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadData();
-  } else {
-    document.getElementById('login-err').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
-  }
-}
+      function doLogin() {
+        const pw = document.getElementById("pw-input").value;
+        if (pw === PASSWORD) {
+          document.getElementById("login-screen").style.display = "none";
+          document.getElementById("dashboard").style.display = "block";
+          loadData();
+        } else {
+          document.getElementById("login-err").style.display = "block";
+          document.getElementById("pw-input").value = "";
+          document.getElementById("pw-input").focus();
+        }
+      }
 
-function logout() {
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('pw-input').value = '';
-  document.getElementById('login-err').style.display = 'none';
-}
+      function logout() {
+        document.getElementById("login-screen").style.display = "flex";
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("pw-input").value = "";
+        document.getElementById("login-err").style.display = "none";
+      }
 
-function loadData() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (raw) { try { members = JSON.parse(raw); } catch { members = []; } }
-  renderTable();
-  updateStats();
-}
+      function loadData() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          try {
+            members = JSON.parse(raw);
+          } catch {
+            members = [];
+          }
+        }
+        renderTable();
+        updateStats();
+      }
 
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(members)); }
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+      }
 
-function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+      function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+      }
 
-function updateStats() {
-  const total = members.length;
-  const totalPts = members.reduce((s, m) => s + (m.points || 0), 0);
-  const avg = total ? Math.round(totalPts / total) : 0;
-  const top = total ? members.reduce((a, b) => (b.points > a.points ? b : a)).name : '—';
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-points').textContent = totalPts;
-  document.getElementById('stat-avg').textContent = avg;
-  document.getElementById('stat-top').textContent = total ? top.split(' ')[0] : '—';
-}
+      function updateStats() {
+        const total = members.length;
+        const totalPts = members.reduce((s, m) => s + (m.points || 0), 0);
+        const avg = total ? Math.round(totalPts / total) : 0;
+        const top = total
+          ? members.reduce((a, b) => (b.points > a.points ? b : a)).name
+          : "—";
+        document.getElementById("stat-total").textContent = total;
+        document.getElementById("stat-points").textContent = totalPts;
+        document.getElementById("stat-avg").textContent = avg;
+        document.getElementById("stat-top").textContent = total
+          ? top.split(" ")[0]
+          : "—";
+      }
 
-function renderTable() {
-  const search = document.getElementById('search').value.toLowerCase();
-  const filterRank = document.getElementById('filter-rank').value;
-  const sortBy = document.getElementById('sort-by').value;
+      function renderTable() {
+        const search = document.getElementById("search").value.toLowerCase();
+        const filterRank = document.getElementById("filter-rank").value;
+        const sortBy = document.getElementById("sort-by").value;
 
-  let filtered = members.filter(m => {
-    return m.name.toLowerCase().includes(search) &&
-      (filterRank ? String(m.rank) === filterRank : true);
-  });
+        let filtered = members.filter((m) => {
+          return (
+            m.name.toLowerCase().includes(search) &&
+            (filterRank ? String(m.rank) === filterRank : true)
+          );
+        });
 
-  if (sortBy === 'points-desc') filtered.sort((a, b) => b.points - a.points);
-  else if (sortBy === 'points-asc') filtered.sort((a, b) => a.points - b.points);
-  else if (sortBy === 'rank') filtered.sort((a, b) => a.rank - b.rank);
-  else filtered.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+        if (sortBy === "points-desc")
+          filtered.sort((a, b) => b.points - a.points);
+        else if (sortBy === "points-asc")
+          filtered.sort((a, b) => a.points - b.points);
+        else if (sortBy === "rank") filtered.sort((a, b) => a.rank - b.rank);
+        else filtered.sort((a, b) => a.name.localeCompare(b.name, "ar"));
 
-  const tbody = document.getElementById('table-body');
-  const empty = document.getElementById('empty-state');
+        const tbody = document.getElementById("table-body");
+        const empty = document.getElementById("empty-state");
 
-  if (filtered.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    tbody.innerHTML = filtered.map((m, i) => `
+        if (filtered.length === 0) {
+          tbody.innerHTML = "";
+          empty.style.display = "block";
+        } else {
+          empty.style.display = "none";
+          tbody.innerHTML = filtered
+            .map(
+              (m, i) => `
       <tr>
         <td style="color:var(--muted)">${i + 1}</td>
         <td><strong>${escHtml(m.name)}</strong></td>
@@ -290,257 +447,466 @@ function renderTable() {
           </div>
         </td>
       </tr>
-    `).join('');
-  }
-  updateStats();
-}
+    `,
+            )
+            .join("");
+        }
+        updateStats();
+      }
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+      function escHtml(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
 
-function openAddModal() {
-  editingId = null;
-  document.getElementById('modal-title').textContent = '➕ إضافة عضو جديد';
-  document.getElementById('m-name').value = '';
-  document.getElementById('m-rank').value = '3';
-  document.getElementById('m-points').value = '0';
-  openModal('member-modal');
-}
+      function openAddModal() {
+        editingId = null;
+        document.getElementById("modal-title").textContent =
+          "➕ إضافة عضو جديد";
+        document.getElementById("m-name").value = "";
+        document.getElementById("m-rank").value = "3";
+        document.getElementById("m-points").value = "0";
+        document.getElementById("m-gender").value = "male";
+        openModal("member-modal");
+      }
 
-function openEditModal(id) {
-  const m = members.find(x => x.id === id);
-  if (!m) return;
-  editingId = id;
-  document.getElementById('modal-title').textContent = '✏️ تعديل العضو';
-  document.getElementById('m-name').value = m.name;
-  document.getElementById('m-rank').value = m.rank;
-  document.getElementById('m-points').value = m.points;
-  openModal('member-modal');
-}
+      function openEditModal(id) {
+        const m = members.find((x) => x.id === id);
+        if (!m) return;
+        editingId = id;
+        document.getElementById("modal-title").textContent = "✏️ تعديل العضو";
+        document.getElementById("m-name").value = m.name;
+        document.getElementById("m-rank").value = m.rank;
+        document.getElementById("m-points").value = m.points;
+        document.getElementById("m-gender").value =
+          m.gender === "female" ? "female" : "male";
+        openModal("member-modal");
+      }
 
-function saveMember() {
-  const name = document.getElementById('m-name').value.trim();
-  const rank = parseInt(document.getElementById('m-rank').value);
-  const points = parseInt(document.getElementById('m-points').value) || 0;
-  if (!name) { showToast('أدخل اسم العضو', 'error'); return; }
-  if (editingId) {
-    const m = members.find(x => x.id === editingId);
-    m.name = name; m.rank = rank; m.points = points;
-    showToast('تم التعديل بنجاح ✅', 'success');
-  } else {
-    members.push({ id: generateId(), name, rank, points, history: [] });
-    showToast('تمت الإضافة بنجاح ✅', 'success');
-  }
-  saveData(); renderTable(); closeModal('member-modal');
-}
+      function saveMember() {
+        const name = document.getElementById("m-name").value.trim();
+        const rank = parseInt(document.getElementById("m-rank").value);
+        const points = parseInt(document.getElementById("m-points").value) || 0;
+        const gender = document.getElementById("m-gender").value;
+        if (!name) {
+          showToast("أدخل اسم العضو", "error");
+          return;
+        }
+        if (editingId) {
+          const m = members.find((x) => x.id === editingId);
+          m.name = name;
+          m.rank = rank;
+          m.points = points;
+          m.gender = gender;
+          showToast("تم التعديل بنجاح ✅", "success");
+        } else {
+          members.push({
+            id: generateId(),
+            name,
+            rank,
+            points,
+            gender,
+            history: [],
+          });
+          showToast("تمت الإضافة بنجاح ✅", "success");
+        }
+        saveData();
+        renderTable();
+        closeModal("member-modal");
+      }
 
-function deleteMember(id) {
-  const m = members.find(x => x.id === id);
-  if (!m) return;
-  deleteTargetId = id;
-  document.getElementById('delete-name').textContent = m.name;
-  openModal('delete-modal');
-}
+      function deleteMember(id) {
+        const m = members.find((x) => x.id === id);
+        if (!m) return;
+        deleteTargetId = id;
+        document.getElementById("delete-name").textContent = m.name;
+        openModal("delete-modal");
+      }
 
-function confirmDelete() {
-  members = members.filter(m => m.id !== deleteTargetId);
-  deleteTargetId = null;
-  saveData(); renderTable(); closeModal('delete-modal');
-  showToast('تم حذف العضو 🗑️', 'error');
-}
+      function confirmDelete() {
+        members = members.filter((m) => m.id !== deleteTargetId);
+        deleteTargetId = null;
+        saveData();
+        renderTable();
+        closeModal("delete-modal");
+        showToast("تم حذف العضو 🗑️", "error");
+      }
 
-function openPointsModal(id) {
-  const m = members.find(x => x.id === id);
-  if (!m) return;
-  pointsTargetId = id;
-  document.getElementById('pts-modal-title').textContent = `⭐ إضافة نقاط — ${m.name}`;
-  
-  const isHighRank = (m.rank === 5 || m.rank === 6);
-  const rankGroupKey = isHighRank ? '5-6' : '3-4';
-  
-  const groupLabel = isHighRank ? '✨ أنشطة الرتب 5 و 6 (موحدة)' : '📌 أنشطة الرتب 3 و 4';
-  document.getElementById('pts-actions-label').textContent = groupLabel;
-  
-  document.getElementById('action-list').innerHTML = ACTIONS[rankGroupKey].map(a => `
+      function openPointsModal(id) {
+        const m = members.find((x) => x.id === id);
+        if (!m) return;
+        pointsTargetId = id;
+        document.getElementById("pts-modal-title").textContent =
+          `⭐ إضافة نقاط — ${m.name}`;
+
+        const isHighRank = m.rank === 5 || m.rank === 6;
+        const rankGroupKey = isHighRank ? "5-6" : "3-4";
+
+        const groupLabel = isHighRank
+          ? "✨ أنشطة الرتب 5 و 6 (موحدة)"
+          : "📌 أنشطة الرتب 3 و 4";
+        document.getElementById("pts-actions-label").textContent = groupLabel;
+
+        document.getElementById("action-list").innerHTML = ACTIONS[rankGroupKey]
+          .map(
+            (a) => `
     <div class="action-item" onclick="quickAddPoints(${a.pts}, '${a.label.replace(/'/g, "\\'")}')">
       <span>${a.label}</span>
       <span class="action-pts">+${a.pts}</span>
     </div>
-  `).join('');
-  
-  document.getElementById('custom-pts').value = '';
-  document.getElementById('pts-note').value = '';
-  renderHistory(m);
-  openModal('points-modal');
-}
+  `,
+          )
+          .join("");
 
-function quickAddPoints(pts, label) { addPoints(pts, label); }
+        document.getElementById("custom-pts").value = "";
+        document.getElementById("pts-note").value = "";
+        renderHistory(m);
+        openModal("points-modal");
+      }
 
-function addCustomPoints() {
-  const pts = parseInt(document.getElementById('custom-pts').value) || 0;
-  const note = document.getElementById('pts-note').value.trim() || 'نقاط مخصصة';
-  if (pts <= 0) { showToast('أدخل عدد نقاط صحيح', 'error'); return; }
-  addPoints(pts, note);
-  document.getElementById('custom-pts').value = '';
-  document.getElementById('pts-note').value = '';
-}
+      function quickAddPoints(pts, label) {
+        addPoints(pts, label);
+      }
 
-function addPoints(pts, label) {
-  const m = members.find(x => x.id === pointsTargetId);
-  if (!m) return;
-  m.points += pts;
-  if (!m.history) m.history = [];
-  m.history.unshift({ label, pts, date: today() });
-  if (m.history.length > 50) m.history = m.history.slice(0, 50);
-  saveData(); renderTable(); renderHistory(m);
-  showToast(`+${pts} نقطة — ${label}`, 'success');
-}
+      function addCustomPoints() {
+        const pts = parseInt(document.getElementById("custom-pts").value) || 0;
+        const note =
+          document.getElementById("pts-note").value.trim() || "نقاط مخصصة";
+        if (pts <= 0) {
+          showToast("أدخل عدد نقاط صحيح", "error");
+          return;
+        }
+        addPoints(pts, note);
+        document.getElementById("custom-pts").value = "";
+        document.getElementById("pts-note").value = "";
+      }
 
-function renderHistory(m) {
-  const el = document.getElementById('pts-history');
-  if (!m.history || m.history.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px">لا يوجد سجل بعد</div>';
-    return;
-  }
-  el.innerHTML = m.history.map(h => `
+      function addPoints(pts, label) {
+        const m = members.find((x) => x.id === pointsTargetId);
+        if (!m) return;
+        m.points += pts;
+        if (!m.history) m.history = [];
+        m.history.unshift({ label, pts, date: today() });
+        if (m.history.length > 50) m.history = m.history.slice(0, 50);
+        saveData();
+        renderTable();
+        renderHistory(m);
+        showToast(`+${pts} نقطة — ${label}`, "success");
+      }
+
+      function renderHistory(m) {
+        const el = document.getElementById("pts-history");
+        if (!m.history || m.history.length === 0) {
+          el.innerHTML =
+            '<div style="color:var(--muted);font-size:0.82rem;padding:8px">لا يوجد سجل بعد</div>';
+          return;
+        }
+        el.innerHTML = m.history
+          .map(
+            (h) => `
     <div class="history-entry">
       <span>${h.label}</span>
       <span class="history-pts">+${h.pts}</span>
       <span class="history-date">${h.date}</span>
     </div>
-  `).join('');
-}
+  `,
+          )
+          .join("");
+      }
 
-function arabicTextImage(text, fontSize, color, bold) {
-  const canvas = document.createElement('canvas');
-  const dpr = 3;
-  const fSize = fontSize * dpr;
-  canvas.height = (fSize + 8) * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.font = `${bold ? '700' : '400'} ${fSize}px Cairo, Arial`;
-  const w = Math.ceil(ctx.measureText(text).width) + 16;
-  canvas.width = w;
-  ctx.clearRect(0, 0, w, canvas.height);
-  ctx.font = `${bold ? '700' : '400'} ${fSize}px Cairo, Arial`;
-  ctx.fillStyle = color;
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'right';
-  ctx.fillText(text, w - 4, canvas.height / 2);
-  return { dataUrl: canvas.toDataURL('image/png'), w: w / dpr, h: canvas.height / dpr };
-}
+      function arabicTextImage(text, fontSize, color, bold) {
+        const canvas = document.createElement("canvas");
+        const dpr = 3;
+        const fSize = fontSize * dpr;
+        canvas.height = (fSize + 8) * dpr;
+        const ctx = canvas.getContext("2d");
+        ctx.font = `${bold ? "700" : "400"} ${fSize}px Cairo, Arial`;
+        const w = Math.ceil(ctx.measureText(text).width) + 16;
+        canvas.width = w;
+        ctx.clearRect(0, 0, w, canvas.height);
+        ctx.font = `${bold ? "700" : "400"} ${fSize}px Cairo, Arial`;
+        ctx.fillStyle = color;
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "right";
+        ctx.fillText(text, w - 4, canvas.height / 2);
+        return {
+          dataUrl: canvas.toDataURL("image/png"),
+          w: w / dpr,
+          h: canvas.height / dpr,
+        };
+      }
 
-async function exportPDF() {
-  if (members.length === 0) { showToast('لا يوجد أعضاء للتصدير', 'error'); return; }
-  showToast('جاري إنشاء PDF...', 'success');
-  if (!window.jspdf) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const sorted = [...members].sort((a, b) => b.points - a.points);
+      async function exportPDF() {
+        if (members.length === 0) {
+          showToast("لا يوجد أعضاء للتصدير", "error");
+          return;
+        }
+        showToast("جاري إنشاء PDF...", "success");
+        if (!window.jspdf) {
+          await new Promise((res, rej) => {
+            const s = document.createElement("script");
+            s.src =
+              "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+            s.onload = res;
+            s.onerror = rej;
+            document.head.appendChild(s);
+          });
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+        });
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const sorted = [...members].sort((a, b) => b.points - a.points);
 
-  const drawPageBg = () => { doc.setFillColor(10,15,30); doc.rect(0,0,pageW,pageH,'F'); };
-  drawPageBg();
+        const drawPageBg = () => {
+          doc.setFillColor(10, 15, 30);
+          doc.rect(0, 0, pageW, pageH, "F");
+        };
+        drawPageBg();
 
-  doc.setFillColor(17,24,39); doc.rect(0,0,pageW,38,'F');
-  doc.setFillColor(0,212,255); doc.rect(0,0,pageW,2,'F');
+        doc.setFillColor(17, 24, 39);
+        doc.rect(0, 0, pageW, 38, "F");
+        doc.setFillColor(0, 212, 255);
+        doc.rect(0, 0, pageW, 2, "F");
 
-  const titleImg = arabicTextImage('لوحة النقاط', 14, '#00d4ff', true);
-  doc.addImage(titleImg.dataUrl,'PNG',(pageW-titleImg.w)/2,8,titleImg.w,titleImg.h);
+        const titleImg = arabicTextImage("لوحة النقاط", 14, "#00d4ff", true);
+        doc.addImage(
+          titleImg.dataUrl,
+          "PNG",
+          (pageW - titleImg.w) / 2,
+          8,
+          titleImg.w,
+          titleImg.h,
+        );
 
-  const totalPts = members.reduce((s,m)=>s+m.points,0);
-  const statsText = `${today()}  |  عدد الأعضاء: ${members.length}  |  مجموع النقاط: ${totalPts}`;
-  const statsImg = arabicTextImage(statsText,7,'#64748b',false);
-  doc.addImage(statsImg.dataUrl,'PNG',(pageW-statsImg.w)/2,24,statsImg.w,statsImg.h);
+        const totalPts = members.reduce((s, m) => s + m.points, 0);
+        const statsText = `${today()}  |  عدد الأعضاء: ${members.length}  |  مجموع النقاط: ${totalPts}`;
+        const statsImg = arabicTextImage(statsText, 7, "#64748b", false);
+        doc.addImage(
+          statsImg.dataUrl,
+          "PNG",
+          (pageW - statsImg.w) / 2,
+          24,
+          statsImg.w,
+          statsImg.h,
+        );
 
-  let y = 48;
-  const colNum=14, colRank=30, colName=110, colPts=155;
+        let y = 48;
+        const colNum = 14,
+          colRank = 30,
+          colName = 110,
+          colPts = 155;
 
-  doc.setFillColor(26,34,53); doc.rect(10,y-6,pageW-20,10,'F');
+        doc.setFillColor(26, 34, 53);
+        doc.rect(10, y - 6, pageW - 20, 10, "F");
 
-  for (const h of [{text:'#',x:colNum,center:true},{text:'الرتبة',x:colRank+8,center:true},{text:'الاسم',x:colName,right:true},{text:'النقاط',x:colPts,center:true}]) {
-    const img = arabicTextImage(h.text,7,'#64748b',true);
-    const xPos = h.right ? h.x-img.w : h.center ? h.x-img.w/2 : h.x;
-    doc.addImage(img.dataUrl,'PNG',xPos,y-5,img.w,img.h);
-  }
-  y += 9;
+        for (const h of [
+          { text: "#", x: colNum, center: true },
+          { text: "الرتبة", x: colRank + 8, center: true },
+          { text: "الاسم", x: colName, right: true },
+          { text: "النقاط", x: colPts, center: true },
+        ]) {
+          const img = arabicTextImage(h.text, 7, "#64748b", true);
+          const xPos = h.right ? h.x - img.w : h.center ? h.x - img.w / 2 : h.x;
+          doc.addImage(img.dataUrl, "PNG", xPos, y - 5, img.w, img.h);
+        }
+        y += 9;
 
-  const rankColors = {3:[96,165,250],4:[52,211,153],5:[251,191,36],6:[192,132,252]};
-  for (let i=0; i<sorted.length; i++) {
-    const m = sorted[i];
-    if (y > pageH-20) { doc.addPage(); drawPageBg(); y=20; }
-    if (i%2===0) { doc.setFillColor(17,24,39); doc.rect(10,y-5,pageW-20,10,'F'); }
-    const rc = rankColors[m.rank]||[100,116,139];
-    const numImg = arabicTextImage(String(i+1),7.5,'#64748b',false);
-    doc.addImage(numImg.dataUrl,'PNG',colNum,y-4,numImg.w,numImg.h);
-    doc.setFillColor(...rc); doc.roundedRect(colRank,y-4.5,12,7,1.5,1.5,'F');
-    const rankImg = arabicTextImage(`رتبة ${m.rank}`,6,'#0a0f1e',true);
-    doc.addImage(rankImg.dataUrl,'PNG',colRank+6-rankImg.w/2,y-4,rankImg.w,rankImg.h);
-    const nameImg = arabicTextImage(m.name,9,'#e2e8f0',true);
-    doc.addImage(nameImg.dataUrl,'PNG',colName-nameImg.w,y-5,nameImg.w,nameImg.h);
-    doc.setFillColor(0,40,55); doc.roundedRect(colPts-14,y-4.5,28,7,2,2,'F');
-    const ptsImg = arabicTextImage(`${m.points} نقطة`,7.5,'#00d4ff',true);
-    doc.addImage(ptsImg.dataUrl,'PNG',colPts-ptsImg.w/2,y-4,ptsImg.w,ptsImg.h);
-    y += 11;
-  }
+        const rankColors = {
+          3: [96, 165, 250],
+          4: [52, 211, 153],
+          5: [251, 191, 36],
+          6: [192, 132, 252],
+        };
+        for (let i = 0; i < sorted.length; i++) {
+          const m = sorted[i];
+          if (y > pageH - 20) {
+            doc.addPage();
+            drawPageBg();
+            y = 20;
+          }
+          if (i % 2 === 0) {
+            doc.setFillColor(17, 24, 39);
+            doc.rect(10, y - 5, pageW - 20, 10, "F");
+          }
+          const rc = rankColors[m.rank] || [100, 116, 139];
+          const numImg = arabicTextImage(String(i + 1), 7.5, "#64748b", false);
+          doc.addImage(
+            numImg.dataUrl,
+            "PNG",
+            colNum,
+            y - 4,
+            numImg.w,
+            numImg.h,
+          );
+          doc.setFillColor(...rc);
+          doc.roundedRect(colRank, y - 4.5, 12, 7, 1.5, 1.5, "F");
+          const rankImg = arabicTextImage(`رتبة ${m.rank}`, 6, "#0a0f1e", true);
+          doc.addImage(
+            rankImg.dataUrl,
+            "PNG",
+            colRank + 6 - rankImg.w / 2,
+            y - 4,
+            rankImg.w,
+            rankImg.h,
+          );
+          const nameImg = arabicTextImage(m.name, 9, "#e2e8f0", true);
+          doc.addImage(
+            nameImg.dataUrl,
+            "PNG",
+            colName - nameImg.w,
+            y - 5,
+            nameImg.w,
+            nameImg.h,
+          );
+          doc.setFillColor(0, 40, 55);
+          doc.roundedRect(colPts - 14, y - 4.5, 28, 7, 2, 2, "F");
+          const ptsImg = arabicTextImage(
+            `${m.points} نقطة`,
+            7.5,
+            "#00d4ff",
+            true,
+          );
+          doc.addImage(
+            ptsImg.dataUrl,
+            "PNG",
+            colPts - ptsImg.w / 2,
+            y - 4,
+            ptsImg.w,
+            ptsImg.h,
+          );
+          y += 11;
+        }
 
-  doc.setFillColor(124,58,237); doc.rect(0,pageH-2,pageW,2,'F');
+        doc.setFillColor(124, 58, 237);
+        doc.rect(0, pageH - 2, pageW, 2, "F");
 
-  const nameParts = sorted.map(m=>`${m.name} (${m.points})`);
-  let fname = nameParts.length<=4 ? nameParts.join(' - ') : nameParts.slice(0,3).join(' - ')+` +${nameParts.length-3}`;
-  fname = fname.replace(/[/\\?%*:|"<>]/g,'').trim();
-  doc.save(`${fname}.pdf`);
-  showToast('تم تصدير PDF بنجاح 📄', 'success');
-}
+        const nameParts = sorted.map((m) => `${m.name} (${m.points})`);
+        let fname =
+          nameParts.length <= 4
+            ? nameParts.join(" - ")
+            : nameParts.slice(0, 3).join(" - ") + ` +${nameParts.length - 3}`;
+        fname = fname.replace(/[/\\?%*:|"<>]/g, "").trim();
+        doc.save(`${fname}.pdf`);
+        showToast("تم تصدير PDF بنجاح 📄", "success");
+      }
 
-function importJSON() { document.getElementById('import-file').click(); }
+      function importJSON() {
+        document.getElementById("import-file").click();
+      }
 
-function handleImport(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (Array.isArray(data)) {
-        members = data; saveData(); renderTable();
-        showToast(`تم استيراد ${data.length} عضو ✅`, 'success');
-      } else throw new Error();
-    } catch { showToast('ملف غير صالح ❌', 'error'); }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-}
+      function handleImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (Array.isArray(data)) {
+              members = data;
+              saveData();
+              renderTable();
+              showToast(`تم استيراد ${data.length} عضو ✅`, "success");
+            } else throw new Error();
+          } catch {
+            showToast("ملف غير صالح ❌", "error");
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+      // ---------- DISCORD REPORT ----------
 
-document.querySelectorAll('.modal-bg').forEach(bg => {
-  bg.addEventListener('click', e => { if (e.target===bg) bg.classList.remove('open'); });
-});
+      function openReportModal() {
+        if (members.length === 0) {
+          showToast("لا يوجد أعضاء لإنشاء التقرير", "error");
+          return;
+        }
+        document.getElementById("report-sort").value = "points-desc";
+        generateReport();
+        openModal("report-modal");
+      }
 
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `show ${type}`;
-  setTimeout(() => t.className='', 2500);
-}
+      function generateReport() {
+        const sortBy = document.getElementById("report-sort").value;
+        let list = [...members];
+        if (sortBy === "points-desc") list.sort((a, b) => b.points - a.points);
+        else if (sortBy === "points-asc")
+          list.sort((a, b) => a.points - b.points);
+        else if (sortBy === "rank") list.sort((a, b) => a.rank - b.rank);
+        else list.sort((a, b) => a.name.localeCompare(b.name, "ar"));
 
-function today() {
-  return new Date().toLocaleDateString('ar-SA', {year:'numeric',month:'2-digit',day:'2-digit'});
-}
+        const lineRow = Array(5).fill(DISCORD_LINE).join(" ");
 
-document.addEventListener('keydown', e => {
-  if (e.key==='Escape') document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));
-});
-</script>
-</body>
+        const blocks = list.map((m) => {
+          const starEmoji =
+            m.gender === "female" ? DISCORD_STAR_PINK : DISCORD_STAR;
+          const pointsPart =
+            m.points === 0
+              ? m.gender === "female"
+                ? DISCORD_PINK
+                : DISCORD_LOADER_MALE
+              : m.points;
+          return `### - ${m.name} (${pointsPart}) ${starEmoji}\n${lineRow}`;
+        });
+
+        document.getElementById("report-text").value = blocks.join("\n");
+      }
+
+      async function copyReport() {
+        const text = document.getElementById("report-text").value;
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast("تم نسخ التقرير 📋", "success");
+        } catch {
+          const ta = document.getElementById("report-text");
+          ta.select();
+          document.execCommand("copy");
+          showToast("تم نسخ التقرير 📋", "success");
+        }
+      }
+
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      document.querySelectorAll(".modal-bg").forEach((bg) => {
+        bg.addEventListener("click", (e) => {
+          if (e.target === bg) bg.classList.remove("open");
+        });
+      });
+
+      function showToast(msg, type = "success") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = `show ${type}`;
+        setTimeout(() => (t.className = ""), 2500);
+      }
+
+      function today() {
+        return new Date().toLocaleDateString("ar-SA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape")
+          document
+            .querySelectorAll(".modal-bg.open")
+            .forEach((m) => m.classList.remove("open"));
+      });
+    </script>
+  </body>
 </html>
